@@ -30,13 +30,15 @@ class Tag extends Model implements Sortable
     {
         $locale = $locale ?? app()->getLocale();
 
-        $locale = '"'.$locale.'"';
-        
         $connectionType = $query->getModel()->getConnection()->getDriverName();
         
-        $whereRaw = $connectionType == 'pgsql' ? "LOWER(name->>'" . $locale ."') ilike ?" : "LOWER(JSON_EXTRACT(name, '$.".$locale."')) like ?";
+        $locale = $connectionType == 'pgsql' ? "'".$locale."'" :'"'.$locale.'"';
 
-        return $query->whereRaw($whereRaw, ['"%'.strtolower($name).'%"']);
+        $whereRaw = $connectionType == 'pgsql' ? "LOWER(name->>" . $locale .") like ?" : "LOWER(JSON_EXTRACT(name, '$.". '"'.$locale.'"' ."')) like ?";
+
+        $parameters = $connectionType == 'pgsql' ? ['%'.strtolower($name).'%'] : ['"%'.strtolower($name).'%"'];
+
+        return $query->whereRaw($whereRaw, $parameters);
     }
 
     /**
