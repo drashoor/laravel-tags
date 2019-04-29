@@ -28,7 +28,7 @@ class Tag extends Model implements Sortable
 
     public function scopeContaining(Builder $query, string $name, $locale = null): Builder
     {
-        $locale = $locale ?? app()->getLocale();
+        $locale = 'en';
 
         $connectionType = $query->getModel()->getConnection()->getDriverName();
         
@@ -68,7 +68,7 @@ class Tag extends Model implements Sortable
 
     public static function findFromString(string $name, string $type = null, string $locale = null)
     {
-        $locale = $locale ?? app()->getLocale();
+        $locale = 'en';
 
         return static::query()
             ->where("name->{$locale}", $name)
@@ -78,7 +78,7 @@ class Tag extends Model implements Sortable
 
     public static function findFromStringOfAnyType(string $name, string $locale = null)
     {
-        $locale = $locale ?? app()->getLocale();
+        $locale = 'en';
 
         return static::query()
             ->where("name->{$locale}", $name)
@@ -87,7 +87,7 @@ class Tag extends Model implements Sortable
 
     protected static function findOrCreateFromString(string $name, string $type = null, string $locale = null): self
     {
-        $locale = $locale ?? app()->getLocale();
+        $locale = 'en';
 
         $tag = static::findFromString($name, $type, $locale);
 
@@ -104,7 +104,7 @@ class Tag extends Model implements Sortable
     public function setAttribute($key, $value)
     {
         if ($key === 'name' && ! is_array($value)) {
-            return $this->setTranslation($key, app()->getLocale(), $value);
+            return $this->setTranslation($key, 'ev', $value);
         }
 
         return parent::setAttribute($key, $value);
